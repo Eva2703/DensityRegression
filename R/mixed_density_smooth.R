@@ -320,6 +320,7 @@ smooth.construct.md.smooth.spec <- function (object, data, knots) {
 
   if (continuous) {
     k <- sort(knots[[object$term]])
+    ord <- m[1] + 2
     if (is.null(k)) {
       xl <- object$xt$domain_continuous[1]
       xu <- object$xt$domain_continuous[2]
@@ -344,7 +345,6 @@ smooth.construct.md.smooth.spec <- function (object, data, knots) {
       if (length(k) != nk + 2 * m[1] + 2)
         stop(paste("There should be ", nk + 2 * m[1] + 2, " supplied knots"))
     }
-    ord <- m[1] + 2
     # if (k[ord] != object$xt$domain_continuous[1] ||
     #     k[length(k) - (ord - 1)] != object$xt$domain_continuous[2]) {
     if (isFALSE(all.equal(k[c(ord, length(k) - (ord - 1))],
