@@ -247,7 +247,7 @@ smooth.construct.md.smooth.spec <- function (object, data, knots) {
     object$p.order <- m
     if (object$bs.dim < 0)
       object$bs.dim <- max(10, m[1] + 1) ## default
-    nk <- object$bs.dim - m[1] # basis dimension - order of spline -> number of interior knots for continuous component
+    nk <- object$bs.dim - m[1] # basis dimension - order of spline -> number of knots (without knot extension, but including interval boundaries) for continuous component
     if (nk <= 0)
       stop("Basis dimension too small for b-spline order")
     if (length(object$term) != 1)
@@ -337,6 +337,9 @@ smooth.construct.md.smooth.spec <- function (object, data, knots) {
       dx <- (xu - xl)/(nk - 1)
       k <- seq(xl - dx * (m[1] + 1), xu + dx * (m[1] + 1),
                length = nk + 2 * m[1] + 2)
+      # seq might lead to numerical inpreciseness, thus we ensure that the boundary knots are exactly correct:
+      k[ord] <- xl
+      k[length(k) - (ord-1)] <- xu
     } else {
       if (length(k) != nk + 2 * m[1] + 2)
         stop(paste("There should be ", nk + 2 * m[1] + 2, " supplied knots"))
