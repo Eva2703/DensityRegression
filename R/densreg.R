@@ -638,8 +638,7 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
     }
     if (is.null(effect[5][[1]])) {
       mc <- TRUE
-    }
-    else{
+    } else{
       mc <- effect[5][[1]]
     }
     l <- l+1
@@ -736,8 +735,7 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
 
     if (is.null(effect[6][[1]])) {
       mc <- TRUE
-    }
-    else{
+    } else {
       mc <- effect[6][[1]]
     }
     f_function_var_coef <- paste0(f_function_var_coef, "+ ti(", effect[1], ", ",
@@ -810,8 +808,7 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
     l <- l+1
     if (is.null(effect[[5]])) {
       mc <- paste0(rep("TRUE", length(effect[[1]])), collapse = ", ")
-    }
-    else{
+    } else {
       mc <- paste0(effect[[5]], collapse = ", ")
     }
     if (is.null(effect[6][[1]])) {
@@ -829,8 +826,8 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
                                 ",  domain_continuous = ", deparse(domain_continuous),
                                 ", weights_discrete = ", deparse(weights_discrete),
                                 ", penalty_discrete = ", penalty_discrete, ")))")
-      j <- j+1}
-    else{
+      j <- j+1
+    } else {
       f_flex_interact <- paste0(f_flex_interact, "+ ti(",
                                 paste0(effect[[1]], collapse = ", "), ", ", y,
                                 paste0(", bs = c('", paste0(effect[[2]], collapse = "', '"), "', 'md')") ,
@@ -868,8 +865,7 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
           ...
         )
       )
-  }
-  else{
+  } else {
     m <-
       do.call(
         "gam",
@@ -892,7 +888,7 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
                      Vc = m$Vc[-intercepts, -intercepts, drop = FALSE])
   if (is.numeric(y)) {
     densi <- colnames(data)[y]
-  } else{
+  } else {
     densi <- y
   }
   # dta_est <- as.data.table(dta_est)
@@ -913,14 +909,14 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
           inverse = TRUE,
           w = dta_est$Delta[1:nrow(obs_density)]
         )
-    } else{
+    } else {
       f_hat <-
         clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)])
     }
   }
   if (colnames(dta_est)[2] == "weighted_counts") {
-    t <- unique(dta_est[, 3])}
-  else{
+    t <- unique(dta_est[, 3])
+  } else {
     t <- unique(dta_est[, 2])
   }
   if (!isFALSE(values_discrete) & !isFALSE(domain_continuous)) {
@@ -950,9 +946,7 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
         clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)])
     }
   }
-  if (!isFALSE(values_discrete) & isFALSE(domain_continuous))
-  {
-
+  if (!isFALSE(values_discrete) & isFALSE(domain_continuous)) {
     if (!is.null(ncol(f_hat_clr))) {
       f_hat <-
         apply(
@@ -963,15 +957,15 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
           w = dta_est$Delta[1:nrow(obs_density)]
         )
 
-    } else{
+    } else {
       f_hat <-
         clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)])
     }
   }
-  if (isFALSE(values_discrete) & !isFALSE(domain_continuous))
-  {    if (is.null(bin_number)) {
-    bin_number <- nrow(t)
-  }
+  if (isFALSE(values_discrete) & !isFALSE(domain_continuous)) {
+    if (is.null(bin_number)) {
+      bin_number <- nrow(t)
+    }
   }
   if (!effects) {
     result <-    list(
@@ -1012,7 +1006,7 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
     if ((max(positions_singles)) < length(colnames(pred_terms))) {
       positions_smooths <-
         c((max(positions_singles) + 1):length(colnames(pred_terms)))
-    } else{
+    } else {
       positions_smooths <- c()
     }
     smooth_cols <- c()
