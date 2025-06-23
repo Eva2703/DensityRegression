@@ -511,7 +511,8 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
                          weights_discrete = weights_discrete, domain_continuous = domain_continuous)
   cov_combi_id <- unique(subset(dta_est, TRUE,
                                 names(dta_est) %in% c(var_vec, "group_id")))
-  domain_data <- as.data.table(unique(subset(dta_est, TRUE, names(dta_est) %in% c(y, "discrete", "Delta"))))
+  cols_domain_data <- names(dta_est) %in% c(y, "discrete", "Delta")
+  domain_data <- as.data.table(unique(subset(dta_est, TRUE, cols_domain_data)))
   domain_data[, type := paste0(ifelse(discrete, "discrete.", "bin_mid."), rowid(discrete))][, discrete := NULL]
   # setnames(domain_data, old = y, new = "u")
 
