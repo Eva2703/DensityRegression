@@ -4,42 +4,85 @@
 \alias{clr}
 \title{Clr and inverse clr transformation}
 \usage{
-clr(f, w = 1, inverse = FALSE)
+clr(
+  f,
+  inverse = FALSE,
+  w = 1,
+  values_discrete = FALSE,
+  domain_continuous = FALSE,
+  ...
+)
 }
 \arguments{
-\item{f}{A vector containing the function values (evaluated on a grid) of the
-function \eqn{f} to transform. If \code{inverse = FALSE}, \code{f} must be a density,
-i.e., all entries must be positive and usually \code{f} integrates to one.
-If \code{inverse = TRUE}, \code{f} should integrate to zero, see Details.
+\item{f}{A \code{\link[base]{function}} corresponding to the (clr transformed) density
+(taking a vector of values \eqn{y \in \Ycal}{y \in Y} as first argument) or a
+\code{\link[base]{vector}} containing the function values (evaluated on a grid)
+of the function to transform. If \code{inverse = FALSE}, \code{f} must be a
+density, i.e., all entries must be nonnegative and usually \code{f} integrates to
+one. If \code{inverse = TRUE}, \code{f} should integrate to zero, see Details.
 For \code{\link{densreg}} objects \code{dr}, one column of \code{dr$f_hat} or
 \code{dr$f_hat_clr} (for inverse clr) are appropriate choices for \code{f}
 (or use \code{apply(dr$f_hat, MARGIN = 2, FUN = clr, w = dr$domain_data$Delta)}
 to clr transform all columns of \code{dr$f_hat} at once).}
 
-\item{w}{A vector of length one or of the same length as \code{f} containing
-positive integration weights. If \code{w} has length one, this
-weight is used for all function values. The integral of \eqn{f} is approximated
-via \eqn{\int_{\mathcal{Y}} f \, \mathrm{d}\mu \approx
-\sum_{j=1}^m}{\sum_{j=1}^m} \code{w}\eqn{_j} \code{f}\eqn{_j},
-where \eqn{m} equals the length of \code{f}.
-For \code{\link{densreg}} objects \code{dr}, the vector \code{dr$domain_data$Delta}
-corresponds the appropriate weights to be used for \code{w}, when applying
-\code{clr} to columns of \code{dr$f_hat} or \code{dr$f_hat_clr}
-(for inverse clr).}
-
 \item{inverse}{Logical, indicating if clr (\code{inverse = FALSE}; default)
 or inverse clr transformation (\code{inverse = TRUE}) shall be computed.}
+
+\item{w}{A vector of positive Dirac/integration weights. If \code{f} is a
+\code{\link[base]{function}}, it contains weights for the Dirac measures corresponding
+to \code{values_discrete}, with \code{\link[stats]{integrate}} used for integrating
+the continuous component (Lebesgue measure). If \code{f} is a \code{\link[base]{vector}},
+\code{w} contains the integration weights to approximate the integral of the
+function \eqn{f} via
+\eqn{\int_{\mathcal{Y}} f \, \mathrm{d}\mu \approx \sum_{j=1}^m}{\sum_{j=1}^m} \code{w}\eqn{_j} \code{f}\eqn{_j},
+where \eqn{m} equals the length of \code{f}.
+In both cases, \code{w} can be a scalar for equal weights, otherwise, its length
+must match the length of \code{values_discrete} or \code{f}, respectively.
+Note that for \code{\link{densreg}} objects \code{dr}, the vector
+\code{dr$domain_data$Delta} corresponds the appropriate weights to be used for
+\code{w}, when applying \code{clr} to columns of \code{dr$f_hat} or
+\code{dr$f_hat_clr} (for inverse clr).}
+
+\item{values_discrete}{Vector of values in \eqn{\mathcal{Y}_d}{Y_d} (the subset of
+the domain \eqn{Y} corresponding to the discrete component of the densities).
+Only necessary, if \code{f} is a \code{\link[base]{function}}, otherwise this argument
+is redundant. % Defaults to \code{c(0, 1)}.
+If set to \code{FALSE}, the discrete component is considered to be empty, i.e.,
+the Lebesgue measure is used as reference measure (continuous special case).}
+
+\item{domain_continuous}{An interval (i.e., a numeric vector of length 2,
+where the first entry is smaller than the second one) specifying
+\eqn{\mathcal{Y}_c}{Y_c} (the subset of the domain \eqn{Y} corresponding to the
+continuous component of the densities). % Defaults to \code{c(0, 1)}.
+If set to \code{FALSE}, the continuous component is considered to be empty, i.e.,
+a weighted sum of Dirac measures is used as reference measure (discrete special
+case).}
+
+\item{...}{optional arguments to \code{\link[stats]{integrate}}.}
 }
 \value{
-A vector of the same length as \code{f} containing the (inverse) clr
-transformation of \code{f}.
+The (inverse) clr transformation of \code{f} as
+\itemize{
+\item \code{\link[base]{function}}, if \code{f} is a \code{\link[base]{function}},
+\item \code{\link[base]{vector}} of the same length as \code{f} and evaluated on the
+same grid, if \code{f} is a \code{\link[base]{vector}}.
+}
 }
 \description{
-\code{clr} computes the (inverse) clr transformation of a vector \code{f}
-of (clr transformed) density evaluations with respect to integration
-weights \code{w} corresponding to a Bayes Hilbert space
-\eqn{B^2(\mu) = B^2(\mathcal{Y}, \mathcal{A}, \mu)}{B^2(\mu) = B^2(Y, A, \mu)}.
-This is a copy of \code{FDboost::clr} (with slightly adjusted help page).
+\code{clr} computes the (inverse) clr transformation of a (clr transformed)
+density function, which is an element of a mixed (continuous/discrete) Bayes
+Hilbert space
+\eqn{B^2(\mu) = B^2(\mathcal{Y}, \mathcal{A}, \mu)}{B^2(\mu) = B^2(Y, A, \mu)}
+(or of \eqn{L^2_0(\mu) := \{ f \in L^2(\mu) ~|~ \int_{\mathcal{Y}} f \, \mathrm{d}\mu = 0\}}{L^2_0(\mu) := {f \in L^2(\mu) | \int_Y f d\mu = 0}}
+for clr transformed densities).
+Can either be applied to a function or to evaluations of a function on a grid.
+% If \code{f} is a function, \code{\link[stats]{integrate}} is used for integration with
+% respect to the Lebesgue measure, while \code{w} specifies the weights for the
+% Dirac measures on the discrete values \code{values_discrete}.
+% However, \code{f} can also be a vector of (clr transformed) density evaluations,
+% with \code{w} containing the integration weights corresponding to the reference
+% measure \eqn{\mu}. In this case,
+In the latter case, this \code{clr} function is identical to \code{FDboost}'s \code{\link[FDboost]{clr}}.
 }
 \details{
 The clr transformation maps a density \eqn{f} from \eqn{B^2(\mu)} to
@@ -49,50 +92,161 @@ via
 The inverse clr transformation maps a function \eqn{f} from
 \eqn{L^2_0(\mu)} to \eqn{B^2(\mu)} via
 \deqn{\mathrm{clr}^{-1}(f) := \frac{\exp f}{\int_{\mathcal{Y}} \exp f \, \mathrm{d}\mu}.}{clr^{-1}(f) := (exp f) / (\int_Y \exp f d\mu).}
+
 Note that in contrast to Maier et al. (2025b), this definition of the inverse
 clr transformation includes normalization, yielding the respective probability
 density function (representative of the equivalence class of proportional
 functions in \eqn{B^2(\mu)}).
 
-The (inverse) clr transformation depends not only on \eqn{f}, but also on the
-underlying measure space \eqn{\left( \mathcal{Y}, \mathcal{A}, \mu\right)}{(Y, A, \mu)},
-which determines the integral. In \code{clr} this is specified via the
-integration weights \code{w}. E.g., for a discrete set \eqn{\mathcal{Y}}{Y}
-with \eqn{\mathcal{A} = \mathcal{P}(\mathcal{Y})}{A = P(Y)} the power set of
-\eqn{\mathcal{Y}}{Y} and \eqn{\mu = \sum_{t \in Y} \delta_t} the sum of dirac
-measures at \eqn{t \in \mathcal{Y}}{t \in Y}, the default \code{w = 1} is
-the correct choice. In this case, integrals are indeed computed exactly, not
-only approximately.
-For an interval \eqn{\mathcal{Y} = [a, b]}{Y = [a, b]}
-with \eqn{\mathcal{A} = \mathcal{B}}{A = B} the Borel \eqn{\sigma}-algebra
-restricted to \eqn{\mathcal{Y}}{Y} and \eqn{\mu = \lambda} the Lebesgue measure,
-the choice of \code{w} depends on the grid on which the function was evaluated:
-\code{w}\eqn{_j} must correspond to the length of the subinterval of \eqn{[a, b]}, which
+For a mixed Bayes Hilbert space, we have
+\eqn{\mu = \lambda + \sum_{d = 1}^D w_d \delta_{t_d}}, where
+\eqn{t_1, \ldots, t_D} are the values of the discrete component
+\eqn{\mathcal{Y}_d}{Y_d}, determining the integral of \eqn{f} over
+\eqn{\mathcal{Y} = \mathcal{Y}_c \cup \mathcal{Y}_d}{Y = Y_c \cup Y_d}.
+If \code{f} is a \code{\link[base]{function}}, the Lebesgue integral on the interval
+\eqn{\mathcal{Y}_c}{Y_c} is computed with \code{\link[stats]{integrate}} and the
+vector \code{w} contains the weights \eqn{w_1, \ldots, w_D}.
+If \code{f} is a \code{\link[base]{vector}}, \code{w} contains integration weights
+for each function evaluation. E.g., in the discrete special case,
+\eqn{\mathcal{Y} = \mathcal{Y}_d}{Y = Y_d}, where all weights equal 1,
+\eqn{w_d = 1} for all \eqn{d = 1, \ldots, D}, the default \code{w = 1} is
+the correct choice. In the continuous special case, the choice of \code{w}
+(in the case that \code{f} is a \code{\link[base]{vector}}) depends on the grid on
+which the function was evaluated: \code{w}\eqn{_j} must correspond to the
+length of the subinterval of \eqn{[a, b]}, which the function value
 \code{f}\eqn{_j} represents.
 E.g., for a grid with equidistant distance \eqn{d}, where the boundary grid
 values are \eqn{a + \frac{d}{2}}{a + d/2} and \eqn{b - \frac{d}{2}}{b - d/2}
 (i.e., the grid points are centers of intervals of size \eqn{d}),
 equal weights \eqn{d} should be chosen for \code{w}.
+In the mixed case, this is straightforwardly combined.
 }
 \examples{
-### Continuous case (Y = [0, 1] with Lebesgue measure):
-# evaluate density of a Beta distribution on an equidistant grid
-g <- seq(from = 0.005, to = 0.995, by = 0.01)
-f <- dbeta(g, 2, 5)
+### Continuous case (Y = Y_c = [0, 1] with Lebesgue measure):
+# Beta distribution with shape1 = 2, shape2 = 5
+# Applied to function
+clr_f_c <- clr(dbeta, values_discrete = FALSE, shape1 = 2, shape2 = 5)
+# Applied to evaluation on equidistant grid
+y_c <- seq(from = 0.005, to = 0.995, by = 0.01)
 # compute clr transformation with distance of two grid points as integration weight
-f_clr <- clr(f, w = 0.01)
+clr_f_c_eval <- clr(dbeta(y_c, shape1 = 2, shape2 = 5), w = 0.01)
+# compare results
+all.equal(clr_f_c(y_c), clr_f_c_eval)
 # visualize result
-plot(g, f_clr , type = "l")
+plot(y_c, clr_f_c(y_c), ylab = "clr [f_c] (y)", xlab = "y", type = "l")
+lines(y_c, clr_f_c_eval, lty = 2, col = "red")
 abline(h = 0, col = "grey")
-# compute inverse clr transformation (w as above)
-f_clr_inv <- clr(f_clr, w = 0.01, inverse = TRUE)
+legend("bottom", lty = 1:2, col = 1:2,
+       legend = c("function as first argument of clr()",
+                  "vector as first argument of clr()"))
+
+# inverse clr transformation
+# Applied to function
+f_c <- clr(clr_f_c, inverse = TRUE, values_discrete = FALSE)
+# Compare with original density
+all.equal(f_c(y_c), dbeta(y_c, shape1 = 2, shape2 = 5))
+# Applied to evaluation on equidistant grid
+f_c_eval <- clr(clr_f_c_eval, w = 0.01, inverse = TRUE)
+# compare results
+all.equal(f_c(y_c), f_c_eval)
 # visualize result
-plot(g, f, type = "l")
-lines(g, f_clr_inv, lty = 2, col = "red")
+plot(y_c, f_c(y_c), type = "l", ylab = "f_c (y)", xlab = "y")
+lines(y_c, f_c_eval, lty = 2, col = "red")
+legend("bottom", lty = 1:2, col = 1:2,
+       legend = c("function as first argument of clr()",
+                  "vector as first argument of clr()"))
+
+### Discrete case (Y = Y_d = {1, 2, 3, 4} with equal weight 1 in all Dirac measures):
+# Applied to function
+f_d <- function(y) {
+  return(ifelse(y == 1, 0.1, ifelse(y == 2, 0.3, ifelse(y == 3, 0.4, 0.2))))
+}
+clr_f_d <- clr(f_d, values_discrete = 1:4, w = 1, domain_continuous = FALSE)
+# Applied to evaluation of discrete values
+y_d <- 1:4
+# compute clr transformation with distance of two grid points as integration weight
+clr_f_d_eval <- clr(f_d(y_d), w = 1)
+# compare results
+all.equal(clr_f_d(y_d), clr_f_d_eval)
+# visualize result
+plot(y_d, clr_f_d(y_d), ylab = "clr [f_d] (y)", xlab = "y", type = "p")
+points(y_d, clr_f_d_eval, pch = 2, col = "red")
+abline(h = 0, col = "grey")
+legend("bottom", pch = 1:2, col = 1:2,
+       legend = c("function as first argument of clr()",
+                  "vector as first argument of clr()"))
+
+# inverse clr transformation
+# Applied to function
+f_d_ <- clr(clr_f_d, inverse = TRUE, values_discrete = 1:4, w = 1,
+            domain_continuous = FALSE)
+# Compare with original density
+all.equal(f_d_(y_d), f_d(y_d))
+# Applied to evaluation on equidistant grid
+f_d_eval <- clr(clr_f_d_eval, w = 1, inverse = TRUE)
+# compare results
+all.equal(f_d_(y_d), f_d_eval)
+# visualize result
+plot(y_d, f_d(y_d), type = "p", ylab = "f_d (y)", xlab = "y", ylim = c(0, max(f_d(y_d))))
+points(y_d, f_d_eval, pch = 2, col = "red")
+legend("bottom", pch = 1:2, col = 1:2,
+       legend = c("function as first argument of clr()",
+                  "vector as first argument of clr()"))
+
+### Mixed case (Y = Y_c \cup Y_d with Y_c = [0, 1] and Y_d = {0, 1} with equal
+### weight 1 in all Dirac measures):
+# Applied to function
+f <- function(y) {
+  my_fun <- function(y_) {
+    if (y_ == 0) {
+      return(0.1)
+    } else if (y_ == 1) {
+      return(0.3)
+    } else {
+      return(dbeta(y_, shape1 = 2, shape2 = 5) * 0.6)
+    }
+  }
+  return(sapply(y, my_fun))
+}
+clr_f <- clr(f, values_discrete = 0:1, w = 1, domain_continuous = c(0, 1))
+# Applied to evaluation of discrete values
+y <- c(0, y_c, 1)
+# compute clr transformation with distance of two grid points as integration weight
+clr_f_eval <- clr(f(y), w = c(1, rep(0.01, length(y_c)), 1))
+# compare results
+all.equal(clr_f(y), clr_f_eval)
+# visualize result
+plot(y_c, clr_f(y_c), ylab = "clr [f] (y)", xlab = "y", type = "l")
+points(c(0, 1), clr_f(c(0, 1)))
+lines(y_c, clr_f_eval[-c(1, length(clr_f_eval))], lty = 2, col = "red")
+points(c(0, 1), clr_f_eval[c(1, length(clr_f_eval))], pch = 2, col = "red")
+abline(h = 0, col = "grey")
+legend("bottom", pch = 1:2, col = 1:2,
+       legend = c("function as first argument of clr()",
+                  "vector as first argument of clr()"))
+
+# inverse clr transformation
+# Applied to function
+f_ <- clr(clr_f, inverse = TRUE, values_discrete = 0:1, w = 1,
+          domain_continuous = c(0, 1))
+# Compare with original density
+all.equal(f_(y), f(y))
+# Applied to evaluation on equidistant grid
+f_eval <- clr(clr_f_eval, w = c(1, rep(0.01, length(y_c)), 1), inverse = TRUE)
+# compare results
+all.equal(f_(y), f_eval)
+# visualize result
+plot(y_c, f_(y_c), type = "l", ylab = "f (y)", xlab = "y", ylim = c(0, max(f(y))))
+points(c(0, 1), f_(c(0, 1)))
+lines(y_c, f_eval[-c(1, length(f_eval))], lty = 2, col = "red")
+points(c(0, 1), f_eval[c(1, length(f_eval))], pch = 2, col = "red")
+legend("topright", pch = 1:2, col = 1:2,
+       legend = c("function as first argument of clr()",
+                  "vector as first argument of clr()"))
 
 }
 \references{
-\code{FDboost::clr}
+\code{\link[FDboost]{clr}}
 
 Maier, E.-M., Fottner, A., Stoecker, A., Okhrin, Y., & Greven, S. (2025b):
 Conditional density regression for individual-level data.
