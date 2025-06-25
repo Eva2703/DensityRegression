@@ -51,7 +51,7 @@ of individual observations, which is common in particular for discrete data).
 Either the variable name can be given as string or the column position of the
 variable in \code{data} as integer. If \code{bin_number} and \code{bin_width}
 are both \code{NULL}, midpoints of unique observations \eqn{y_i} are used as
-boundaries of histogram bins (if \eqn{I} is not empty, i.e., if there is a
+boundaries of histogram bins (if \eqn{\mathcal{Y}_c}{Y_c} is not empty, i.e., if there is a
 continuous component), which are then used to compute the bin widths (which are
 later required es offset in the regression model).
 If argument \code{counts} is missing (\code{NULL}; default), counts are
@@ -69,19 +69,19 @@ given as string or the column position of the variable in \code{data} as integer
 If missing (\code{NULL}), counts are constructed from individual observations
 (which is equivalent to all observations counted once).}
 
-\item{bin_width}{Width of histogram bins partitioning \eqn{I}. Can be one
+\item{bin_width}{Width of histogram bins partitioning \eqn{\mathcal{Y}_c}{Y_c}. Can be one
 scalar value (specifying an equidistant bin width), or a vector containing the
 width of each bin. The combined length of the specified bins must match the
 length of the continuous part of the domain. Alternative to \code{bin_number}.
 If \code{bin_number} and \code{bin_width} are both given and the two values
 are not compatible, an error is returned.}
 
-\item{bin_number}{Number of equidistant histogram bins partitioning \eqn{I}.
+\item{bin_number}{Number of equidistant histogram bins partitioning \eqn{\mathcal{Y}_c}{Y_c}.
 Alternative to \code{bin_width}. If neither parameter is specified,
 \code{bin_number = 100} is used as default. If \code{bin_number} and \code{bin_width} are
 both given and the two values are not compatible, an error is returned.}
 
-\item{values_discrete}{Vector of values in \eqn{\mathcal{D}}{D} (the subset of
+\item{values_discrete}{Vector of values in \eqn{\mathcal{Y}_d}{Y_d} (the subset of
 the domain corresponding to the discrete part of the densities). Defaults to
 missing (\code{NULL}) in which case it is set to \code{c(0, 1)}. If set to
 \code{FALSE}, the discrete component is considered to be empty, i.e., the
@@ -92,11 +92,12 @@ to \code{values_discrete}. If missing (\code{NULL}) it is set to 1 in all
 components as default. Can be a scalar for equal weights for all discrete values
 or a vector with specific weights for each corresponding discrete value.}
 
-\item{domain_continuous}{An interval (i.e., a vector of length 2) specifying
-\eqn{I} (the subset of the domain corresponding to the continuous part of the
+\item{domain_continuous}{An interval (i.e., a numeric vector of length 2,
+where the first entry is smaller than the second one) specifying
+\eqn{\mathcal{Y}_c}{Y_c} (the subset of the domain corresponding to the continuous part of the
 densities). If missing (\code{NULL}) it is set to \code{c(0, 1)} as default. If
 set to \code{FALSE}, the continuous component is considered to be empty, i.e.,
-a weighted sum of dirac measures is used as reference measure (discrete special
+a weighted sum of Dirac measures is used as reference measure (discrete special
 case).}
 }
 \value{

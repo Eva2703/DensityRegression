@@ -8,7 +8,7 @@
 #' based on observations \eqn{y_i} from the conditional distributions given
 #' \eqn{x_i}, via a (penalized) maximum likelihood approach. The (penalized)
 #' log-likelihood function is approximated via the (penalized) log-likelihood of
-#' an appropriate poisson regression model, which - after constructing the count
+#' an appropriate Poisson regression model, which - after constructing the count
 #' data appropriately via \code{\link{data2counts}} - is fitted using
 #' \code{mgcv}'s \code{\link[mgcv]{gam}} with a new smooth term \code{bs="md"}
 #' (see \code{\link{smooth.construct.md.smooth.spec}}) for mixed densities in
@@ -23,14 +23,14 @@
 #' \eqn{B^2(\mu) = B^2(\mathcal{Y}, \mathcal{A}, \mu)}{B^2(\mu) = B^2(Y, A, \mu)}
 #' (including continuous and discrete ones as special cases). The subset of the
 #' domain \eqn{\mathcal{Y}}{Y} corresponding to the continuous part of the densities
-#' is denoted with \eqn{I}, the one corresponding to the discrete part with
-#' \eqn{\mathcal{D}}{D}. The densities are modeled via a structured additive
+#' is denoted with \eqn{\mathcal{Y}_c}{Y_c}, the one corresponding to the discrete part with
+#' \eqn{\mathcal{Y}_d}{Y_d}. The densities are modeled via a structured additive
 #' regression model
 #' \deqn{f_{x_i} = \bigoplus_{j = 1}^J h_j (x_i)}
 #' with partial effects \eqn{h_j (x_i) \in B^2(\mu)} depending on no, one, or
 #' several covariates \eqn{x_i}. Each partial effect is represented using a
 #' tensor product basis, consisting of an appropriate vector of basis functions
-#' \eqn{b_{\mathcal{Y}}{b_Y}} in \eqn{B^2(\mu)} over the domain of
+#' \eqn{b_{\mathcal{Y}}}{b_Y} in \eqn{B^2(\mu)} over the domain of
 #' \eqn{B^2(\mu)}, and a vector of basis functions \eqn{b_{\mathcal{X}, j}}{b_{X, j}}
 #' over the respective covariates.
 #' To obtain basis functions \eqn{b_{\mathcal{Y}}}{b_Y} consider the orthogonal
@@ -38,7 +38,7 @@
 #' Bayes Hilbert space \eqn{B^2(\delta^\bullet)} and a continuous Bayes Hilbert
 #' space \eqn{B^2(\lambda)} developed in Section 3.4 of Maier et al. (2025a).
 #' Note that for the domain of the discrete Bayes Hilbert space, the discrete part
-#' \eqn{\mathcal{D}}{D} has to be extended by an additional arbitrary discrete value
+#' \eqn{\mathcal{Y}_d}{Y_d} has to be extended by an additional arbitrary discrete value
 #' (for the discrete summary of the continuous part).
 #' We construct basis functions in both these spaces by transforming appropriate
 #' basis functions in the corresponding (unconstrained) \eqn{L^2} spaces (more
@@ -111,7 +111,7 @@
 #' Either the variable name can be given as string or the column position of the
 #' variable in \code{data} as integer. If \code{bin_number} and \code{bin_width}
 #' are both \code{NULL}, midpoints of unique observations \eqn{y_i} are used as
-#' boundaries of histogram bins (if \eqn{I} is not empty, i.e., if there is a
+#' boundaries of histogram bins (if \eqn{\mathcal{Y}_c}{Y_c} is not empty, i.e., if there is a
 #' continuous component), which are then used to compute the bin widths (which are
 #' later required es offset in the regression model).
 #' If argument \code{counts} is missing (\code{NULL}; default), counts are
@@ -121,13 +121,13 @@
 #' Please use \code{weighted_counts} (additionally to \code{counts}) to include
 #' possible weighted data.
 #' @param weighted_counts (Optional) variable in \code{data} which contains a
-#' weighted count for each observation (compare Appendix D of Maier et al. (2025b)).
+#' weighted count for each observation (compare appendix D of Maier et al. (2025b)).
 #' In this case, also absolute counts have to be specified via \code{counts}.
 #' Otherwise, \code{weighted_counts} is ignored. Either the variable name can be
 #' given as string or the column position of the variable in \code{data} as integer.
 #' If missing (\code{NULL}), counts are constructed from individual observations
 #' (which is equivalent to all observations counted once).
-#' @param values_discrete Vector of values in \eqn{\mathcal{D}}{D} (the subset of
+#' @param values_discrete Vector of values in \eqn{\mathcal{Y}_d}{Y_d} (the subset of
 #' the domain corresponding to the discrete part of the densities). Defaults to
 #' missing (\code{NULL}) in which case it is set to \code{c(0, 1)}. If set to
 #' \code{FALSE}, the discrete component is considered to be empty, i.e., the
@@ -136,24 +136,25 @@
 #' to \code{values_discrete}. If missing (\code{NULL}) it is set to 1 in all
 #' components as default. Can be a scalar for equal weights for all discrete values
 #' or a vector with specific weights for each corresponding discrete value.
-#' @param domain_continuous An interval (i.e., a vector of length 2) specifying
-#' \eqn{I} (the subset of the domain corresponding to the continuous part of the
+#' @param domain_continuous An interval (i.e., a numeric vector of length 2,
+#' where the first entry is smaller than the second one) specifying
+#' \eqn{\mathcal{Y}_c}{Y_c} (the subset of the domain corresponding to the continuous part of the
 #' densities). If missing (\code{NULL}) it is set to \code{c(0, 1)} as default. If
 #' set to \code{FALSE}, the continuous component is considered to be empty, i.e.,
-#' a weighted sum of dirac measures is used as reference measure (discrete special
+#' a weighted sum of Dirac measures is used as reference measure (discrete special
 #' case).
-#' @param bin_number Number of equidistant histogram bins partitioning \eqn{I}.
+#' @param bin_number Number of equidistant histogram bins partitioning \eqn{\mathcal{Y}_c}{Y_c}.
 #' Alternative to \code{bin_width}. If neither parameter is specified,
 #' \code{bin_number = 100} is used as default. If \code{bin_number} and \code{bin_width} are
 #' both given and the two values are not compatible, an error is returned.
-#' @param bin_width Width of histogram bins partitioning \eqn{I}. Can be one
+#' @param bin_width Width of histogram bins partitioning \eqn{\mathcal{Y}_c}{Y_c}. Can be one
 #' scalar value (specifying an equidistant bin width), or a vector containing the
 #' width of each bin. The combined length of the specified bins must match the
 #' length of the continuous part of the domain. Alternative to \code{bin_number}.
 #' If \code{bin_number} and \code{bin_width} are both given and the two values
 #' are not compatible, an error is returned.
 #' @param m_continuous Vector of two integers specifying the order of the B-spline
-#' basis over \eqn{I} and the order of the difference penalty (like the argument
+#' basis over \eqn{\mathcal{Y}_c}{Y_c} and the order of the difference penalty (like the argument
 #' \code{m} for P-Spline smooth terms \code{bs = "ps"} in \code{\link[mgcv]{ti}},
 #' etc.) for basis functions in \eqn{L^2(\lambda)}, before transformation to
 #' \eqn{L^2_0(\lambda)} (compare details). If missing it is set to cubic splines
@@ -163,13 +164,13 @@
 #' in \eqn{L^2(\lambda)} (like the argument \code{k} for P-Spline smooth terms
 #' \code{bs = "ps"} in \code{\link[mgcv]{ti}}, etc.), before transformation
 #' to \eqn{L^2_0(\lambda)} (compare details). Note that the transformation reduces
-#' the basis number by 1. The basis \eqn{b_{\mathcal{Y}}{b_Y}}{b_Y} in the mixed
+#' the basis number by 1. The basis \eqn{b_{\mathcal{Y}}}{b_Y} in the mixed
 #' Bayes Hilbert space \eqn{B^2(\mu)} will thus have
 #' \code{k_continuous - 1 + length(values_discrete)} elements. See also
 #' \code{\link[mgcv]{choose.k}} for more information on choosing this parameter.
 #' If missing (\code{NULL}) it is set to 10.
 #' @param sp_y Integer or vector specifying the smoothing parameter for the marginal
-#' penalty matrix for \eqn{b_{\mathcal{Y}}{b_Y}}{b_Y} (anisotropic penalty; like
+#' penalty matrix for \eqn{b_{\mathcal{Y}}}{b_Y} (anisotropic penalty; like
 #' the argument \code{sp} in \code{\link[mgcv]{ti}}, etc.). If a vector is submitted,
 #' its length must be the number of partial effects (including the intercept), with
 #' the \eqn{j}-th entry specifying the smoothing parameter for the \eqn{j}-th

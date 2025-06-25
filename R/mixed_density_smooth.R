@@ -8,8 +8,8 @@
 #' \eqn{B^2(\mu) = B^2(\mathcal{Y}, \mathcal{A}, \mu)}{B^2(\mu) = B^2(Y, A, \mu)}
 #' (including continuous or discrete ones as special cases) as in Maier et al. (2025b).
 #' The subset of the domain \eqn{\mathcal{Y}}{Y} corresponding to the continuous
-#' part of the densities is denoted with \eqn{I}, the one corresponding to the
-#' discrete part with \eqn{\mathcal{D}}{D}.
+#' part of the densities is denoted with \eqn{\mathcal{Y}_c}{Y_c}, the one corresponding to the
+#' discrete part with \eqn{\mathcal{Y}_d}{Y_d}.
 #' Corresponding covariate observations are the discrete values for the discrete
 #' component and the midpoints of the bins underlying the histograms approximating
 #' the densities for the continuous component. Response observations are the
@@ -39,7 +39,7 @@
 #' @details
 #' The basis and penalty are constructed from a P-spline basis (continuous component)
 #' respectively indicator functions with optional difference penalty (discrete
-#' component) transformed to \eqn{L^2_0} as described in Appendix D of Maier et al.
+#' component) transformed to \eqn{L^2_0} as described in appendix D of Maier et al.
 #' (2025a) and embedded to the mixed Bayes Hilbert space as described in Section
 #' 2.2 of Maier et al. (2025b).
 #' The argument \code{xt} in \code{\link[mgcv]{ti}} is used for further specification
@@ -53,7 +53,7 @@
 #' %                        penalty_discrete = NULL)))
 #' \itemize{
 #' \item
-#' \code{values_discrete}: Vector of values in \eqn{\mathcal{D}}{D} (the subset of
+#' \code{values_discrete}: Vector of values in \eqn{\mathcal{Y}_d}{Y_d} (the subset of
 #' the domain corresponding to the discrete part of the densities). Defaults to
 #' missing (\code{NULL}) in which case it is set to \code{c(0, 1)}. If set to
 #' \code{FALSE}, the discrete component is considered to be empty, i.e., the
@@ -65,9 +65,9 @@
 #' or a vector with specific weights for each corresponding discrete value.
 #' \item
 #' \code{domain_continuous}: An interval (i.e., a vector of length 2) specifying
-#' \eqn{I}. If missing (\code{NULL}) it is set to \code{c(0, 1)} as default. If
+#' \eqn{\mathcal{Y}_c}{Y_c}. If missing (\code{NULL}) it is set to \code{c(0, 1)} as default. If
 #' set to \code{FALSE}, the continuous component is considered to be empty, i.e.,
-#' a weighted sum of dirac measures is used as reference measure (discrete special
+#' a weighted sum of Dirac measures is used as reference measure (discrete special
 #' case).
 #' \item
 #' \code{penalty_discrete}: integer (or \code{NULL}) giving the order of
@@ -165,7 +165,7 @@
 #'                     m = list(c(2, 2), c(2, 2)), k = c(8, 8), mc = c(TRUE, FALSE),
 #'                     np = FALSE) +
 #'                  # intercepts per covariate combination (modeling absolute
-#'                  # counts for poisson regression)
+#'                  # counts for Poisson regression)
 #'                  as.factor(group_id) +
 #'                  # offsets: log(Delta) accounting for bin width, gam_offsets
 #'                  # for weighted observations
@@ -190,7 +190,7 @@
 #'                    k = c(8, 8), mc = c(TRUE, FALSE), np = FALSE,
 #'                    xt = list(NULL, xt_c)) +
 #'                 # intercepts per covariate combination (modeling absolute
-#'                 # counts for poisson regression)
+#'                 # counts for Poisson regression)
 #'                 as.factor(group_id) +
 #'                 # offsets: log(Delta) accounting for bin width, gam_offsets
 #'                 # for weighted observations
@@ -215,7 +215,7 @@
 #'                   k = c(8, 8), mc = c(TRUE, FALSE), np = FALSE,
 #'                   xt = list(NULL, xt_d), sp = c(-1, 0)) +
 #'                # intercepts per covariate combination (modeling absolute
-#'                # counts for poisson regression)
+#'                # counts for Poisson regression)
 #'                as.factor(group_id) +
 #'                # offsets: log(Delta) accounting for bin width, gam_offsets
 #'                # for weighted observations
@@ -357,7 +357,7 @@ smooth.construct.md.smooth.spec <- function (object, data, knots) {
       warning("The mixed density smoother is not intended to be used for derivatives. Reasonable behavior is only guaranteed for deriv = 0.")
     }
     # construct design matrices from transformed B-splines integrating to zero (see
-    # Appendix D of Maier et al., 2025a, based on Wood, 2017, Section 1.8.1) and
+    # appendix D of Maier et al., 2025a, based on Wood, 2017, Section 1.8.1) and
     # apply embedding to combine them to one design matrix of a mixed basis (Maier
     # et al., 2025a, Proposition C.2; Maier et al., 2025b, Section 2.2)
     C_cont <- sapply(1:(length(k) - ord), function(j) stats::integrate(function(x)
@@ -373,7 +373,7 @@ smooth.construct.md.smooth.spec <- function (object, data, knots) {
     if (object$mono != 0) {
       stop("SCOP splines are not supported yet!")
     } else {
-      # construct penalty matrices including necessary transformation (see Appendix
+      # construct penalty matrices including necessary transformation (see appendix
       # D of Maier et al., 2025a) and combine them to one penalty (block) matrix
       # for the mixed design matrix
       if (m[2] > 0) {
@@ -540,7 +540,7 @@ smooth.construct.md.smooth.spec <- function (object, data, knots) {
 #'                     m = list(c(2, 2), c(2, 2)), k = c(8, 8), mc = c(TRUE, FALSE),
 #'                     np = FALSE) +
 #'                  # intercepts per covariate combination (modeling absolute
-#'                  # counts for poisson regression)
+#'                  # counts for Poisson regression)
 #'                  as.factor(group_id) +
 #'                  # offsets: log(Delta) accounting for bin width, gam_offsets
 #'                  # for weighted observations
