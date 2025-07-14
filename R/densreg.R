@@ -908,11 +908,13 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
           MARGIN = 2,
           FUN = clr,
           inverse = TRUE,
-          w = dta_est$Delta[1:nrow(obs_density)]
+          w = dta_est$Delta[1:nrow(obs_density),],
+          tolerance = FALSE
         )
     } else {
       f_hat <-
-        clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)])
+        clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)],
+            tolerance = FALSE)
     }
   }
   if (colnames(dta_est)[2] == "weighted_counts") {
@@ -940,11 +942,13 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
           MARGIN = 2,
           FUN = clr,
           inverse = TRUE,
-          w = dta_est$Delta[1:nrow(obs_density)]
+          w = dta_est$Delta[1:nrow(obs_density)],
+          tolerance = FALSE
         )
-    } else{
+    } else {
       f_hat <-
-        clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)])
+        clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)],
+            tolerance = FALSE)
     }
   }
   if (!isFALSE(values_discrete) & isFALSE(domain_continuous)) {
@@ -955,12 +959,14 @@ densreg <- function(data, y = NULL, var_vec = NULL, sample_weights = NULL, count
           MARGIN = 2,
           FUN = clr,
           inverse = TRUE,
-          w = dta_est$Delta[1:nrow(obs_density)]
+          w = dta_est$Delta[1:nrow(obs_density)],
+          tolerance = FALSE
         )
 
     } else {
       f_hat <-
-        clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)])
+        clr(f_hat_clr, inverse = TRUE, w = dta_est$Delta[1:nrow(obs_density)],
+            tolerance = FALSE)
     }
   }
   if (isFALSE(values_discrete) & !isFALSE(domain_continuous)) {

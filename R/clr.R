@@ -54,6 +54,11 @@
 #' If set to \code{FALSE}, the continuous component is considered to be empty, i.e.,
 #' a weighted sum of Dirac measures is used as reference measure (discrete special
 #' case).
+#' @param tolerance value of deviation between the (approximated) integral of
+#' the density and 1 (if \code{inverse = FLASE}) or between the (approximated)
+#' integral of the clr-transformed density and 0 (if \code{inverse = TRUE})
+#' without a warning occurring. If \code{tolerance = FALSE}, the (approximated)
+#' integral is not compared with the theoretical value of 1 or 0.
 #' @param ...  optional arguments to \code{\link[stats]{integrate}}.
 #'
 #' @details The clr transformation maps a density \eqn{f} from \eqn{B^2(\mu)} to
@@ -233,7 +238,7 @@
 #' @export
 
 clr <- function(f, inverse = FALSE, w = 1, values_discrete = FALSE,
-                domain_continuous = FALSE, ...) {
+                domain_continuous = FALSE, tolerance = 0.01, ...) {
   stopifnot("inverse must be TRUE or FALSE." = inverse %in% c(TRUE, FALSE))
   stopifnot("f must be a function or numeric." = is.numeric(f) | is.function(f))
   if (is.function(f)) {
@@ -256,15 +261,19 @@ clr <- function(f, inverse = FALSE, w = 1, values_discrete = FALSE,
     int_f <- sum(f * w)
     if (!inverse) {
       stopifnot("As a density, f must be nonnegative." = all(f >= 0))
-      if (!isTRUE(all.equal(int_f, 1, tolerance = 0.01))) {
-        warning(paste0("f is not a probability density with respect to w. Its integral is ",
-                       round(int_f, 2), "."))
+      if (!isFALSE(tolerance)) {
+        if (!isTRUE(all.equal(int_f, 1, tolerance = tolerance))) {
+          warning(paste0("f is not a probability density with respect to w. Its integral is ",
+                         round(int_f, 4), "."))
+        }
       }
       return(log(f) - 1 / sum(w) * sum(log(f) * w))
     } else {
-      if (!isTRUE(all.equal(int_f, 0, tolerance = 0.01))) {
-        warning(paste0("f does not integrate to zero with respect to w. Its integral is ",
-                       round(int_f, 2), "."))
+      if (!isFALSE(tolerance)) {
+        if (!isTRUE(all.equal(int_f, 0, tolerance = tolerance))) {
+          warning(paste0("f does not integrate to zero with respect to w. Its integral is ",
+                         round(int_f, 4), "."))
+        }
       }
       return(exp(f) / sum(exp(f) * w))
     }
@@ -302,17 +311,21 @@ clr <- function(f, inverse = FALSE, w = 1, values_discrete = FALSE,
       y_grid <- c(y_grid_d, y_grid_c)
       mu_Y <- mu_Y_c + mu_Y_d
       stopifnot("As a density, f must be nonnegative." = all(f(y_grid, ...) >= 0))
-      if (!isTRUE(all.equal(int_f, 1, tolerance = 0.01))) {
-        warning(paste0("f is not a probability density. Its integral is ",
-                       round(int_f, 2), "."))
+      if (!isFALSE(tolerance)) {
+        if (!isTRUE(all.equal(int_f, 1, tolerance = tolerance))) {
+          warning(paste0("f is not a probability density. Its integral is ",
+                         round(int_f, 4), "."))
+        }
       }
       my_fun <- function(y, ...) {
         log(f(y, ...))
       }
     } else {
-      if (!isTRUE(all.equal(int_f, 0, tolerance = 0.01))) {
-        warning(paste0("f does not integrate to zero. Its integral is ",
-                       round(int_f, 2), "."))
+      if (!isFALSE(tolerance)) {
+        if (!isTRUE(all.equal(int_f, 0, tolerance = tolerance))) {
+          warning(paste0("f does not integrate to zero. Its integral is ",
+                         round(int_f, 4), "."))
+        }
       }
       my_fun <- function(y, ...) {
         exp(f(y, ...))
