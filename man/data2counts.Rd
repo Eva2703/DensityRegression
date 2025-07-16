@@ -62,7 +62,7 @@ Please use \code{weighted_counts} (additionally to \code{counts}) to include
 possible weighted data.}
 
 \item{weighted_counts}{(Optional) variable in \code{data} which contains a
-weighted count for each observation (compare Appendix D of Maier et al. (2025b)).
+weighted count for each observation (compare appendix D of Maier et al. (2025b)).
 In this case, also absolute counts have to be specified via \code{counts}.
 Otherwise, \code{weighted_counts} is ignored. Either the variable name can be
 given as string or the column position of the variable in \code{data} as integer.
@@ -110,26 +110,26 @@ the observed (histogram) counts in the first column.
 Weighted (histogram) counts for the respective bin/discrete value incorporating
 the sample weights given by \code{sample_weights}.
 \item Name of variable given to \code{y} - Marks the mid of the respective
-histogram bin (for values in \eqn{I\setminus D}) or the discrete value. If a
-mid corresponds to a discrete value, the mid is shifted to the right by
-\eqn{0.0001} times the minimal distance to the next interval limit OR discrete
-value so that no mid is exactly corresponding to a discrete value. A warning
-message is generated in this case.
+histogram bin (for values in \eqn{\mathcal{Y}_c \setminus \mathcal{Y}_d}{Y_c \setminus Y_d})
+or the discrete value. If a mid corresponds to a discrete value, the mid is
+shifted to the right by \eqn{0.0001} times the minimal distance to the next
+interval limit OR discrete value so that no mid is exactly corresponding to
+a discrete value. A warning message is generated in this case.
 \item Names of all variable columns which where specified by \code{var_vec} -
 These columns contain the values of the respective variables.
 \item \code{group_id} - ID of each covariate combination.
 \item \code{gam_weights} - Vector to be passed to argument \code{weights} in
 \code{\link[mgcv]{gam}} when fitting the Poisson Model, if \code{data} contains
-sample weights, see Appendix C of Maier et al. (2025b).
+sample weights, see appendix C of Maier et al. (2025b).
 \item \code{gam_offset} - Negative logarithm of \code{gam_weights} to be used
 as offset to the predictor of the Poisson Model, if \code{data} contains sample
-weights, see Appendix C of Maier et al. (2025b).
+weights, see appendix C of Maier et al. (2025b).
 \item \code{Delta} - Width of the histogram bin or weight of the Dirac measure
 for a discrete value defined by \code{weights_discrete}. The Poisson model uses
 \code{offset(log(Delta))} to add the necessary additive term in the predictor
-that includes binwidths/dirac weights into the estimation.
+that includes binwidths/Dirac weights into the estimation.
 \item \code{discrete} - Logical value indicating whether the respective \code{y}
-is a discrete value in \eqn{D}.
+is a discrete value in \eqn{\mathcal{Y}_d}{Y_d}.
 }
 Note that a \code{plot}-method for objects of class \code{count_data}
 is available via \code{DensityRegression:::count_data}, however, it is
@@ -140,8 +140,9 @@ not exported, since it is not tested/documented appropriately, yet.
 \eqn{y_i} appropriately to be used in \code{\link[mgcv]{gam}} Poisson models
 by combining all observations of the same conditional distribution (i.e., all
 observations sharing identical values in all covariates) into a vector of counts
-via a histogram on \eqn{I\setminus D} and counts on \eqn{D} where \eqn{I} is
-the interval of the continuous domain and \eqn{D} the set of discrete values.
+via a histogram on \eqn{\mathcal{Y}_c \setminus \mathcal{Y}_d}{Y_c \setminus Y_d}
+and counts on \eqn{\mathcal{Y}_d}{Y_d} where \eqn{\mathcal{Y}_c}{Y_c} is
+the interval of the continuous domain and \eqn{\mathcal{Y}_d}{Y_d} the set of discrete values.
 the discrete component of the underlying mixed (continuous/discrete)
 Bayes Hilbert space \eqn{B^2(\mu) = B^2(\mathcal{Y}, \mathcal{A}, \mu)}{B^2(\mu) = B^2(Y, A, \mu)}.
 We briefly summarize the approach below in the details. Please see Section 2.3

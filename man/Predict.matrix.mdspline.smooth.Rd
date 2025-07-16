@@ -76,7 +76,7 @@ m_mixed <- gam(counts ~
                     m = list(c(2, 2), c(2, 2)), k = c(8, 8), mc = c(TRUE, FALSE),
                     np = FALSE) +
                  # intercepts per covariate combination (modeling absolute
-                 # counts for poisson regression)
+                 # counts for Poisson regression)
                  as.factor(group_id) +
                  # offsets: log(Delta) accounting for bin width, gam_offsets
                  # for weighted observations

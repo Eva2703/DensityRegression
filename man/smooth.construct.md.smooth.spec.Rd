@@ -29,8 +29,8 @@ response variable of interest is a density in a mixed Bayes Hilbert space
 \eqn{B^2(\mu) = B^2(\mathcal{Y}, \mathcal{A}, \mu)}{B^2(\mu) = B^2(Y, A, \mu)}
 (including continuous or discrete ones as special cases) as in Maier et al. (2025b).
 The subset of the domain \eqn{\mathcal{Y}}{Y} corresponding to the continuous
-part of the densities is denoted with \eqn{I}, the one corresponding to the
-discrete part with \eqn{\mathcal{D}}{D}.
+part of the densities is denoted with \eqn{\mathcal{Y}_c}{Y_c}, the one corresponding to the
+discrete part with \eqn{\mathcal{Y}_d}{Y_d}.
 Corresponding covariate observations are the discrete values for the discrete
 component and the midpoints of the bins underlying the histograms approximating
 the densities for the continuous component. Response observations are the
@@ -60,7 +60,7 @@ extreme care to obtain a reasonable model.
 \details{
 The basis and penalty are constructed from a P-spline basis (continuous component)
 respectively indicator functions with optional difference penalty (discrete
-component) transformed to \eqn{L^2_0} as described in Appendix D of Maier et al.
+component) transformed to \eqn{L^2_0} as described in appendix D of Maier et al.
 (2025a) and embedded to the mixed Bayes Hilbert space as described in Section
 2.2 of Maier et al. (2025b).
 The argument \code{xt} in \code{\link[mgcv]{ti}} is used for further specification
@@ -74,7 +74,7 @@ again a list with the following elements:
 %                        penalty_discrete = NULL)))
 \itemize{
 \item
-\code{values_discrete}: Vector of values in \eqn{\mathcal{D}}{D} (the subset of
+\code{values_discrete}: Vector of values in \eqn{\mathcal{Y}_d}{Y_d} (the subset of
 the domain corresponding to the discrete part of the densities). Defaults to
 missing (\code{NULL}) in which case it is set to \code{c(0, 1)}. If set to
 \code{FALSE}, the discrete component is considered to be empty, i.e., the
@@ -86,9 +86,9 @@ components as default. Can be a scalar for equal weights for all discrete values
 or a vector with specific weights for each corresponding discrete value.
 \item
 \code{domain_continuous}: An interval (i.e., a vector of length 2) specifying
-\eqn{I}. If missing (\code{NULL}) it is set to \code{c(0, 1)} as default. If
+\eqn{\mathcal{Y}_c}{Y_c}. If missing (\code{NULL}) it is set to \code{c(0, 1)} as default. If
 set to \code{FALSE}, the continuous component is considered to be empty, i.e.,
-a weighted sum of dirac measures is used as reference measure (discrete special
+a weighted sum of Dirac measures is used as reference measure (discrete special
 case).
 \item
 \code{penalty_discrete}: integer (or \code{NULL}) giving the order of
@@ -165,7 +165,7 @@ m_mixed <- gam(counts ~
                     m = list(c(2, 2), c(2, 2)), k = c(8, 8), mc = c(TRUE, FALSE),
                     np = FALSE) +
                  # intercepts per covariate combination (modeling absolute
-                 # counts for poisson regression)
+                 # counts for Poisson regression)
                  as.factor(group_id) +
                  # offsets: log(Delta) accounting for bin width, gam_offsets
                  # for weighted observations
@@ -190,7 +190,7 @@ m_cont <- gam(counts ~
                    k = c(8, 8), mc = c(TRUE, FALSE), np = FALSE,
                    xt = list(NULL, xt_c)) +
                 # intercepts per covariate combination (modeling absolute
-                # counts for poisson regression)
+                # counts for Poisson regression)
                 as.factor(group_id) +
                 # offsets: log(Delta) accounting for bin width, gam_offsets
                 # for weighted observations
@@ -215,7 +215,7 @@ m_dis <- gam(counts ~
                   k = c(8, 8), mc = c(TRUE, FALSE), np = FALSE,
                   xt = list(NULL, xt_d), sp = c(-1, 0)) +
                # intercepts per covariate combination (modeling absolute
-               # counts for poisson regression)
+               # counts for Poisson regression)
                as.factor(group_id) +
                # offsets: log(Delta) accounting for bin width, gam_offsets
                # for weighted observations

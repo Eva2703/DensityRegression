@@ -10,6 +10,7 @@ clr(
   w = 1,
   values_discrete = FALSE,
   domain_continuous = FALSE,
+  tolerance = 0.01,
   ...
 )
 }
@@ -57,6 +58,12 @@ continuous component of the densities). % Defaults to \code{c(0, 1)}.
 If set to \code{FALSE}, the continuous component is considered to be empty, i.e.,
 a weighted sum of Dirac measures is used as reference measure (discrete special
 case).}
+
+\item{tolerance}{value of deviation between the (approximated) integral of
+the density and 1 (if \code{inverse = FLASE}) or between the (approximated)
+integral of the clr-transformed density and 0 (if \code{inverse = TRUE})
+without a warning occurring. If \code{tolerance = FALSE}, the (approximated)
+integral is not compared with the theoretical value of 1 or 0.}
 
 \item{...}{optional arguments to \code{\link[stats]{integrate}}.}
 }
@@ -125,7 +132,7 @@ In the mixed case, this is straightforwardly combined.
 ### Continuous case (Y = Y_c = [0, 1] with Lebesgue measure):
 # Beta distribution with shape1 = 2, shape2 = 5
 # Applied to function
-clr_f_c <- clr(dbeta, values_discrete = FALSE, shape1 = 2, shape2 = 5)
+clr_f_c <- clr(dbeta, domain_continuous = c(0, 1), shape1 = 2, shape2 = 5)
 # Applied to evaluation on equidistant grid
 y_c <- seq(from = 0.005, to = 0.995, by = 0.01)
 # compute clr transformation with distance of two grid points as integration weight
@@ -142,7 +149,7 @@ legend("bottom", lty = 1:2, col = 1:2,
 
 # inverse clr transformation
 # Applied to function
-f_c <- clr(clr_f_c, inverse = TRUE, values_discrete = FALSE)
+f_c <- clr(clr_f_c, inverse = TRUE, domain_continuous = c(0, 1))
 # Compare with original density
 all.equal(f_c(y_c), dbeta(y_c, shape1 = 2, shape2 = 5))
 # Applied to evaluation on equidistant grid
@@ -152,7 +159,7 @@ all.equal(f_c(y_c), f_c_eval)
 # visualize result
 plot(y_c, f_c(y_c), type = "l", ylab = "f_c (y)", xlab = "y")
 lines(y_c, f_c_eval, lty = 2, col = "red")
-legend("bottom", lty = 1:2, col = 1:2,
+legend("topright", lty = 1:2, col = 1:2,
        legend = c("function as first argument of clr()",
                   "vector as first argument of clr()"))
 
@@ -161,7 +168,7 @@ legend("bottom", lty = 1:2, col = 1:2,
 f_d <- function(y) {
   return(ifelse(y == 1, 0.1, ifelse(y == 2, 0.3, ifelse(y == 3, 0.4, 0.2))))
 }
-clr_f_d <- clr(f_d, values_discrete = 1:4, w = 1, domain_continuous = FALSE)
+clr_f_d <- clr(f_d, values_discrete = 1:4, w = 1)
 # Applied to evaluation of discrete values
 y_d <- 1:4
 # compute clr transformation with distance of two grid points as integration weight
@@ -178,8 +185,7 @@ legend("bottom", pch = 1:2, col = 1:2,
 
 # inverse clr transformation
 # Applied to function
-f_d_ <- clr(clr_f_d, inverse = TRUE, values_discrete = 1:4, w = 1,
-            domain_continuous = FALSE)
+f_d_ <- clr(clr_f_d, inverse = TRUE, values_discrete = 1:4, w = 1)
 # Compare with original density
 all.equal(f_d_(y_d), f_d(y_d))
 # Applied to evaluation on equidistant grid

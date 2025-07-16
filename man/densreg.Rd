@@ -75,7 +75,7 @@ Please use \code{weighted_counts} (additionally to \code{counts}) to include
 possible weighted data.}
 
 \item{weighted_counts}{(Optional) variable in \code{data} which contains a
-weighted count for each observation (compare Appendix D of Maier et al. (2025b)).
+weighted count for each observation (compare appendix D of Maier et al. (2025b)).
 In this case, also absolute counts have to be specified via \code{counts}.
 Otherwise, \code{weighted_counts} is ignored. Either the variable name can be
 given as string or the column position of the variable in \code{data} as integer.
@@ -330,7 +330,7 @@ as response given scalar covariates \eqn{x_i},
 based on observations \eqn{y_i} from the conditional distributions given
 \eqn{x_i}, via a (penalized) maximum likelihood approach. The (penalized)
 log-likelihood function is approximated via the (penalized) log-likelihood of
-an appropriate poisson regression model, which - after constructing the count
+an appropriate Poisson regression model, which - after constructing the count
 data appropriately via \code{\link{data2counts}} - is fitted using
 \code{mgcv}'s \code{\link[mgcv]{gam}} with a new smooth term \code{bs="md"}
 (see \code{\link{smooth.construct.md.smooth.spec}}) for mixed densities in
