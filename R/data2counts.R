@@ -134,7 +134,7 @@
 #' @references
 #' Maier, E.-M., Fottner, A., Stoecker, A., Okhrin, Y., & Greven, S. (2025b):
 #' Conditional density regression for individual-level data.
-#' arXiv preprint arXiv:XXXX.XXXXX.
+#' arXiv preprint arXiv:2510.14502.
 
 data2counts <- function(data, y = NULL, var_vec, sample_weights = NULL, counts = NULL,
                        weighted_counts = NULL, bin_width = NULL,
@@ -344,7 +344,7 @@ data2counts <- function(data, y = NULL, var_vec, sample_weights = NULL, counts =
     # formula to include the weights properly; For each bin, the weight to
     # pass to gam is the weighted count of observations in this bin, divided by
     # the usual count (i.e., the number) of observations in this bin; the offset
-    # that has to be used is -log of the respective weight. See Paper of Maier et al.(2023).
+    # that has to be used is -log of the respective weight. See Paper of Maier et al. (2025a).
     dta_est[, gam_weights := ifelse(counts != 0, weighted_counts / counts, 1)]
     # If counts == 0, the value of weight can actually be arbitrary, but its log
     # has to exist

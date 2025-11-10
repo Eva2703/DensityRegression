@@ -12,7 +12,7 @@ Description: Structured additive regression models for mixed (discrete/continuou
     densities as response with scalar covariates, fitted via Poisson regression
     models based on 'mgcv', where the continuous part of the density
     is approximated via histograms. Implementation for Maier et al. (2025b)
-    <doi:.../arXiv...>.
+    <arXiv:2510.14502>.
 License: GPL-2
 Depends: mgcv
 Imports: 

@@ -16,7 +16,7 @@
 #' In the latter case, this \code{clr} function is identical to \code{FDboost}'s \code{\link[FDboost]{clr}}.
 #'
 #' @param f A \code{\link[base]{function}} corresponding to the (clr transformed) density
-#' (taking a vector of values \eqn{y \in \Ycal}{y \in Y} as first argument) or a
+#' (taking a vector of values \eqn{y \in \mathcal{Y}}{y \in Y} as first argument) or a
 #' \code{\link[base]{vector}} containing the function values (evaluated on a grid)
 #' of the function to transform. If \code{inverse = FALSE}, \code{f} must be a
 #' density, i.e., all entries must be nonnegative and usually \code{f} integrates to
@@ -111,7 +111,7 @@
 #'
 #' Maier, E.-M., Fottner, A., Stoecker, A., Okhrin, Y., & Greven, S. (2025b):
 #' Conditional density regression for individual-level data.
-#' arXiv preprint arXiv:XXXX.XXXXX.
+#' arXiv preprint arXiv:2510.14502.
 #'
 #' @examples
 #' ### Continuous case (Y = Y_c = [0, 1] with Lebesgue measure):

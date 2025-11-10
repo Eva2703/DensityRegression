@@ -133,7 +133,7 @@
 #' @references
 #' Maier, E.-M., Fottner, A., Stoecker, A., Okhrin, Y., & Greven, S. (2025b):
 #' Conditional density regression for individual-level data.
-#' arXiv preprint arXiv:XXXX.XXXXX.
+#' arXiv preprint arXiv:2510.14502.
 #'
 plot_single_histo <- function(dta, case = "all", abs = FALSE, main = NULL,
                       automatic_main = TRUE, ylim = NULL, xlab = NULL,

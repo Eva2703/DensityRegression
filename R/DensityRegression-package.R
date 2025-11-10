@@ -28,7 +28,7 @@
 #' @references
 #' Maier, E.-M., Fottner, A., Stoecker, A., Okhrin, Y., & Greven, S. (2025b):
 #' Conditional density regression for individual-level data.
-#' arXiv preprint arXiv:XXXX.XXXXX.
+#' arXiv preprint arXiv:2510.14502.
 #'
 #' @author
 #' Eva-Maria Maier, Lea Runge, and Alexander Fottner

@@ -356,11 +356,11 @@
 #' @references
 #' Maier, E.-M., Fottner, A., Stoecker, A., Okhrin, Y., & Greven, S. (2025b):
 #' Conditional density regression for individual-level data.
-#' arXiv preprint arXiv:XXXX.XXXXX.
+#' arXiv preprint arXiv:2510.14502.
 #'
 #' Maier, E.-M., Stoecker, A., Fitzenberger, B., Greven, S. (2025a):
 #' Additive Density-on-Scalar Regression in Bayes Hilbert Spaces with an Application to Gender Economics.
-#' Annals of Applied Statistics, 19(1), ???-???.
+#' Annals of Applied Statistics, 19(1), 680-700.
 #'
 #' % Wood, S. N.; Pya, N. & Säfken, B. Smoothing parameter and model selection for general smooth models Journal of the American Statistical Association, Taylor & Francis, 2016, 111, 1548-1563
 #'
